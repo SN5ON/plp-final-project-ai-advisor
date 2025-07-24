@@ -1,6 +1,6 @@
 import spacy
 
-# Load spaCy English model once
+# Load spaCy English model (already pre-installed via setup.sh)
 nlp = spacy.load("en_core_web_sm")
 
 def extract_money(text):
@@ -66,24 +66,3 @@ def get_advice(user_input):
         responses.append("🤖 I'm here to help with beginner investing across Africa. Ask about savings, stocks, or local options.")
 
     return "\n\n".join(responses)
-
-def personalised_advice(income, expenses, savings, risk_level, goal):
-    advice = []
-    emergency_fund = expenses * 3  # 3 months expenses recommended
-
-    advice.append(f"Your monthly income is ${income}, and expenses are ${expenses}.")
-    advice.append(f"Recommended emergency fund: at least ${emergency_fund} (3 months of expenses).")
-    
-    if savings < emergency_fund:
-        advice.append(f"💡 Build your emergency fund first. You currently have ${savings} saved.")
-    else:
-        advice.append(f"✅ You have sufficient emergency savings. You can start investing towards your goal: '{goal}'.")
-
-        if risk_level == "low":
-            advice.append("📉 Recommended: low-risk investments like treasury bonds, fixed deposits, or mutual funds.")
-        elif risk_level == "medium":
-            advice.append("📈 Consider a balanced portfolio with a mix of bonds and stocks, or local ETFs.")
-        else:
-            advice.append("🚀 You might explore higher-risk investments such as stocks or selected cryptocurrencies cautiously.")
-
-    return "\n".join(advice)
