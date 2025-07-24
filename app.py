@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 from advisor_logic import get_advice, personalised_advice
 from data_simulation import load_sample_users
+import os
+import spacy
+
+# Download spaCy model if not already present
+if not os.path.isdir("en_core_web_sm"):
+    os.system("python -m spacy download en_core_web_sm")
+
+nlp = spacy.load("en_core_web_sm")
 
 st.set_page_config(page_title="Africa Investment Advisor", page_icon="💸")
 
