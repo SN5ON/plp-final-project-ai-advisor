@@ -2,31 +2,20 @@ import streamlit as st
 import pandas as pd
 from advisor_logic import get_advice, personalised_advice
 from data_simulation import load_sample_users
-import spacy
-import subprocess
-import importlib.util
 
-# --- Ensure spaCy model is available ---
-model_name = "en_core_web_sm"
-if importlib.util.find_spec(model_name) is None:
-    subprocess.run(["python", "-m", "spacy", "download", model_name])
-
-nlp = spacy.load(model_name)
-
-# --- Streamlit Config ---
 st.set_page_config(page_title="Africa Investment Advisor", page_icon="💸")
 
-# --- Sidebar Navigation ---
+# Sidebar navigation
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["Chatbot", "Personalised Advice", "Upload User CSV"])
 
-# --- Helper Function: Display Chat Messages ---
+# Helper function to display chat messages
 def display_chat(chat_history):
     for speaker, message in chat_history:
         with st.chat_message("user" if speaker == "🧑 You" else "assistant"):
             st.markdown(f"**{speaker}**: {message}")
 
-# --- Page: Chatbot ---
+# Page 1: Chatbot
 if page == "Chatbot":
     st.title("💬 AI Investment Advisor for Africa - Chatbot")
     st.markdown("Ask about saving, investing, or growing income in your country.")
@@ -43,7 +32,7 @@ if page == "Chatbot":
 
     display_chat(st.session_state.chat_history)
 
-# --- Page: Personalised Advice ---
+# Page 2: Personalised Advice
 elif page == "Personalised Advice":
     st.title("📊 Personalised Investment Advice")
     st.markdown("Enter your financial details below to get personalised advice.")
@@ -64,7 +53,7 @@ elif page == "Personalised Advice":
         else:
             st.warning("Please enter valid income and expenses.")
 
-# --- Page: Upload CSV ---
+# Page 3: Upload CSV
 elif page == "Upload User CSV":
     st.title("📁 Upload User Data")
     uploaded_file = st.file_uploader("Upload CSV file", type=["csv"])
@@ -92,6 +81,6 @@ elif page == "Upload User CSV":
         except Exception as e:
             st.error(f"Error reading the file: {e}")
 
-# --- Sidebar Footer ---
+# Footer / Sidebar
 st.sidebar.markdown("---")
-st.sidebar.markdown("💡 **Tip:** Use the Chatbot for quick advice or Personalized Advice for tailored guidance.")
+st.sidebar.markdown("💡 **Tip:** Use the Chatbot for quick advice or Personalised Advice for tailored guidance.")

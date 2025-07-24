@@ -1,15 +1,14 @@
-import spacy
+import re
 
-# Load spaCy English model (already pre-installed via setup.sh)
-nlp = spacy.load("en_core_web_sm")
-
+# Extract amount from text manually (no spaCy)
 def extract_money(text):
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "MONEY":
-            amount_str = ''.join(ch for ch in ent.text if ch.isdigit())
-            if amount_str.isdigit():
-                return int(amount_str)
+    matches = re.findall(r"\$\s?\d+(?:,\d{3})*(?:\.\d+)?|\d{3,}", text)
+    if matches:
+        amount_str = matches[0].replace("$", "").replace(",", "")
+        try:
+            return int(float(amount_str))
+        except ValueError:
+            return None
     return None
 
 def extract_countries(text):
@@ -30,9 +29,7 @@ def extract_countries(text):
     return countries
 
 def get_advice(user_input):
-    doc = nlp(user_input.lower())
     responses = []
-
     amount = extract_money(user_input)
     countries = extract_countries(user_input)
 
@@ -66,3 +63,24 @@ def get_advice(user_input):
         responses.append("🤖 I'm here to help with beginner investing across Africa. Ask about savings, stocks, or local options.")
 
     return "\n\n".join(responses)
+
+def personalised_advice(income, expenses, savings, risk_level, goal):
+    advice = []
+    emergency_fund = expenses * 3
+
+    advice.append(f"Your monthly income is ${income}, and expenses are ${expenses}.")
+    advice.append(f"Recommended emergency fund: at least ${emergency_fund} (3 months of expenses).")
+
+    if savings < emergency_fund:
+        advice.append(f"💡 Build your emergency fund first. You currently have ${savings} saved.")
+    else:
+        advice.append(f"✅ You have sufficient emergency savings. You can start investing toward your goal: '{goal}'.")
+
+        if risk_level == "low":
+            advice.append("📉 Recommended: low-risk investments like treasury bonds, fixed deposits, or mutual funds.")
+        elif risk_level == "medium":
+            advice.append("📈 Consider a balanced portfolio with a mix of bonds and stocks, or local ETFs.")
+        else:
+            advice.append("🚀 You might explore higher-risk investments such as stocks or selected cryptocurrencies cautiously.")
+
+    return "\n".join(advice)
